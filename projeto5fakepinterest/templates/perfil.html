@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block titulo %}
+    FakePinterest-{{ current_user.username }}
+{% endblock %}
+
+{% block body %}
+    <body>
+        <div class="container">
+            {% include "navbar.html" %}
+            {% if formfoto %}
+                <form class="bloco-add-img" method="POST" enctype="multipart/form-data">
+                  {{ formfoto.csrf_token }}
+                  <h2>{{ usuario.username }} - Enviar foto</h2>
+                  <div class="bloco-arquivo">
+                    <label for="foto" class="botao-arquivo">
+                      Escolher arquivo
+                      {{ formfoto.foto(class="input-arquivo", id="foto") }}
+                    </label>
+                    <span id="imagem-arquivo" class=""></span>
+                  </div>
+                  {{ formfoto.botao_criarfoto(class="botao-login") }}
+                </form>
+            {% else %}
+                <div class="bloco-add-img">
+                  <h2>Fotos do perfil de [{{ usuario.username }}]</h2>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="conteudo">
+            {% for foto in usuario.fotos %}
+            <!-- linha abaixo poderia usar id_usuario=foto.id_usuario tambem -->
+            <div class="bloco-imagem">
+                 <img src="{{ url_for('static', filename='fotos_posts/{}'.format(foto.imagem)) }} " alt="Pinterest 1" />
+            </div>
+            {% endfor %}
+        </div>
+
+
+        <script>
+          let input = document.getElementById("foto");
+          let imagemArquivo = document.getElementById("imagem-arquivo");
+
+          input.addEventListener("change", () => {
+            let inputImagem = document.querySelector("input[type=file]").files[0];
+
+            imagemArquivo.classList.add("visivel");
+            imagemArquivo.innerText = inputImagem.name;
+          });
+        </script>
+    </body>
+{% endblock %}
+
